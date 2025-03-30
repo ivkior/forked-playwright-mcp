@@ -40,6 +40,7 @@ program
     .option('--vision', 'Run server that uses screenshots (Aria snapshots are used by default)')
     .option('--port <port>', 'Port to listen on for SSE transport.')
     .option('--use-existing-chrome', 'Use existing Chrome browser instance if available')
+    .option('--existing-profile-dir <path>', 'Path to existing Chrome profile directory')
     .action(async options => {
       const launchOptions: LaunchOptions = {
         headless: !!options.headless,
@@ -51,6 +52,7 @@ program
         launchOptions,
         vision: !!options.vision,
         useExistingChrome: !!options.useExistingChrome,
+        existingProfileDir: options.existingProfileDir,
       }));
       setupExitWatchdog(serverList);
 

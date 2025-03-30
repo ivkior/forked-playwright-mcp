@@ -68,6 +68,7 @@ type Options = {
   launchOptions?: LaunchOptions;
   vision?: boolean;
   useExistingChrome?: boolean;
+  existingProfileDir?: string;
 };
 
 const packageJSON = require('../package.json');
@@ -82,5 +83,6 @@ export function createServer(options?: Options): Server {
     userDataDir: options?.userDataDir ?? '',
     launchOptions: options?.launchOptions,
     useExistingChrome: options?.useExistingChrome ?? false,
+    existingProfileDir: options?.existingProfileDir,
   });
 }

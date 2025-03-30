@@ -31,11 +31,12 @@ type Options = {
   userDataDir: string;
   launchOptions?: LaunchOptions;
   useExistingChrome?: boolean;
+  existingProfileDir?: string;
 };
 
 export function createServerWithTools(options: Options): Server {
-  const { name, version, tools, resources, userDataDir, launchOptions } = options;
-  const context = new Context(userDataDir, launchOptions);
+  const { name, version, tools, resources, userDataDir, launchOptions, useExistingChrome, existingProfileDir } = options;
+  const context = new Context(userDataDir, launchOptions, useExistingChrome, existingProfileDir);
   const server = new Server({ name, version }, {
     capabilities: {
       tools: {},
