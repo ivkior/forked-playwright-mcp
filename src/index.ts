@@ -67,6 +67,7 @@ type Options = {
   userDataDir?: string;
   launchOptions?: LaunchOptions;
   vision?: boolean;
+  useExistingChrome?: boolean;
 };
 
 const packageJSON = require('../package.json');
@@ -80,5 +81,6 @@ export function createServer(options?: Options): Server {
     resources,
     userDataDir: options?.userDataDir ?? '',
     launchOptions: options?.launchOptions,
+    useExistingChrome: options?.useExistingChrome ?? false,
   });
 }

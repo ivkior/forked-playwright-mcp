@@ -30,6 +30,7 @@ type Options = {
   resources: Resource[],
   userDataDir: string;
   launchOptions?: LaunchOptions;
+  useExistingChrome?: boolean;
 };
 
 export function createServerWithTools(options: Options): Server {

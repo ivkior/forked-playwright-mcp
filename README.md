@@ -305,3 +305,40 @@ Vision Mode provides tools for visual-based interactions using screenshots. Here
 - **browser_close**
   - Description: Close the page
   - Parameters: None
+
+### Using existing Chrome browser
+
+You can use an existing Chrome browser instance instead of launching a new one. This is useful when you want to maintain browser state (e.g., login sessions) between MCP operations.
+
+1. Launch Chrome with remote debugging enabled:
+```bash
+# On macOS
+/Applications/Google\ Chrome.app/Contents/MacOS/Google\ Chrome --remote-debugging-port=9222
+
+# On Windows
+"C:\Program Files\Google\Chrome\Application\chrome.exe" --remote-debugging-port=9222
+
+# On Linux
+google-chrome --remote-debugging-port=9222
+```
+
+2. Start the MCP server with the `--use-existing-chrome` option:
+```js
+{
+  "mcpServers": {
+    "playwright": {
+      "command": "npx",
+      "args": [
+        "@playwright/mcp@latest",
+        "--use-existing-chrome"
+      ]
+    }
+  }
+}
+```
+
+When using this option, the MCP server will:
+1. Attempt to detect and connect to an existing Chrome browser with remote debugging enabled
+2. Fall back to launching a new browser instance if no existing browser is found or connection fails
+
+Note: Make sure to launch Chrome with remote debugging before starting the MCP server.
