@@ -306,23 +306,11 @@ Vision Mode provides tools for visual-based interactions using screenshots. Here
   - Description: Close the page
   - Parameters: None
 
-### Using existing Chrome browser
+### Using existing Chrome profile
 
-You can use an existing Chrome browser instance instead of launching a new one. This is useful when you want to maintain browser state (e.g., login sessions) between MCP operations.
+You can use an existing Chrome profile to maintain browser state (e.g., login sessions) between MCP operations. There are two ways to achieve this:
 
-1. Launch Chrome with remote debugging enabled:
-```bash
-# On macOS
-/Applications/Google\ Chrome.app/Contents/MacOS/Google\ Chrome --remote-debugging-port=9222
-
-# On Windows
-"C:\Program Files\Google\Chrome\Application\chrome.exe" --remote-debugging-port=9222
-
-# On Linux
-google-chrome --remote-debugging-port=9222
-```
-
-2. Start the MCP server with the `--use-existing-chrome` option:
+1. Using an existing Chrome profile directory:
 ```js
 {
   "mcpServers": {
@@ -330,15 +318,23 @@ google-chrome --remote-debugging-port=9222
       "command": "npx",
       "args": [
         "@playwright/mcp@latest",
-        "--use-existing-chrome"
+        "--use-existing-chrome",
+        "--existing-profile-dir=/path/to/chrome/profile"
       ]
     }
   }
 }
 ```
 
-When using this option, the MCP server will:
-1. Attempt to detect and connect to an existing Chrome browser with remote debugging enabled
-2. Fall back to launching a new browser instance if no existing browser is found or connection fails
+This method:
+- Uses the specified Chrome profile directory
+- Launches a new Chrome instance with that profile
+- Maintains all browser state (cookies, local storage, etc.)
+- Works reliably across different services and security settings
 
-Note: Make sure to launch Chrome with remote debugging before starting the MCP server.
+The Chrome profile directory is typically located at:
+- Windows: `%USERPROFILE%\AppData\Local\Google\Chrome\User Data\Default`
+- macOS: `~/Library/Application Support/Google Chrome/Default`
+- Linux: `~/.config/google-chrome/Default`
+
+Note: Make sure to close all Chrome instances using the profile before starting the MCP server.
