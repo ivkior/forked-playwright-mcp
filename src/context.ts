@@ -15,6 +15,7 @@
  */
 
 import * as playwright from 'playwright';
+import { findExistingChromeDebugPort } from './chrome-finder';
 
 export class Context {
   private _userDataDir: string;
@@ -26,13 +27,11 @@ export class Context {
   private _fileChooser: playwright.FileChooser | undefined;
   private _lastSnapshotFrames: playwright.FrameLocator[] = [];
   private _useExistingChrome: boolean;
-  private _existingProfileDir: string | undefined;
 
-  constructor(userDataDir: string, launchOptions?: playwright.LaunchOptions, useExistingChrome: boolean = false, existingProfileDir?: string) {
+  constructor(userDataDir: string, launchOptions?: playwright.LaunchOptions, useExistingChrome: boolean = false) {
     this._userDataDir = userDataDir;
     this._launchOptions = launchOptions;
     this._useExistingChrome = useExistingChrome;
-    this._existingProfileDir = existingProfileDir;
   }
 
   async createPage(): Promise<playwright.Page> {
@@ -109,16 +108,17 @@ export class Context {
       return { browser, page };
     }
 
-    if (this._useExistingChrome && this._existingProfileDir) {
+    if (this._useExistingChrome) {
       try {
-        const context = await playwright.chromium.launchPersistentContext(this._existingProfileDir, {
-          ...this._launchOptions,
-          headless: false,
-        });
-        const [page] = context.pages();
-        return { page };
+        const debugPort = await findExistingChromeDebugPort();
+        if (debugPort) {
+          const wsEndpoint = `ws://127.0.0.1:${debugPort}/devtools/browser`;
+          const browser = await playwright.chromium.connect(wsEndpoint);
+          const page = await browser.newPage();
+          return { browser, page };
+        }
       } catch (error) {
-        console.warn('Failed to launch Chrome with existing profile:', error);
+        console.warn('Failed to connect to existing Chrome:', error);
       }
     }
 
